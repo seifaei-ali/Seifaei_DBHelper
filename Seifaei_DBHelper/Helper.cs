@@ -80,7 +80,7 @@ public class UserDefinedFunctions
         }
         var ary = str.Value.Split(' ');
         var aryDate = ary[0].Split(separatorDate);
-        var aryTime = ary[0].Split(separatorTime);
+        var aryTime = ary[1].Split(separatorTime);
 
         return PersianCalendar.ToDateTime(int.Parse(aryDate[0]), int.Parse(aryDate[1]), int.Parse(aryDate[2]),
             int.Parse(aryTime[0]), int.Parse(aryTime[1]), int.Parse(aryTime[2]), 0);
