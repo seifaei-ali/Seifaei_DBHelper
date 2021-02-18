@@ -57,8 +57,33 @@ public class UserDefinedFunctions
         }
 
         var ary = str.Value.Split('/');
-        return PersianCalendar.ToDateTime(int.Parse(ary[0]), int.Parse(ary[1]), int.Parse(ary[2]), 0, 0, 0, 0);
+
+         return  PersianCalendar.ToDateTime(int.Parse(ary[0]), int.Parse(ary[1]), int.Parse(ary[2]), 0, 0, 0, 0);
     }
+
+    [SqlFunction(DataAccess = DataAccessKind.None)]
+    public static DateTime? AS_Date_TryShamsiToMiladi(SqlString str)
+    {
+        if (str.IsNull)
+        {
+            return null;
+        }
+
+        var ary = str.Value.Split('/');
+
+        DateTime? re = null;
+        try
+        {
+            re = PersianCalendar.ToDateTime(int.Parse(ary[0]), int.Parse(ary[1]), int.Parse(ary[2]), 0, 0, 0, 0);
+        }
+        catch (Exception ex)
+        {
+            re = null;
+        }
+        return re;
+    }
+
+
 
     [SqlFunction(DataAccess = DataAccessKind.None)]
     public static DateTime? AS_Date_ShamsiToMiladi_Separator(SqlString str, char separator)
@@ -225,5 +250,25 @@ public class UserDefinedFunctions
 
     }
 
+    [SqlFunction(DataAccess = DataAccessKind.None)]
+    public static string AS_Date_TryToStandardFormat10Char(string date, char separator)
+    {
+        if (date == null || separator == null )
+            return null;
 
+
+        var aryStr = date.Split(separator);
+        int year, month, day;
+        if (aryStr.Length == 3 
+            && int.TryParse(aryStr[0], out year)
+            && int.TryParse(aryStr[1], out month)
+            && int.TryParse(aryStr[2], out day))
+        {
+            return year.ToString("0000") + separator + month.ToString("00") + separator + day.ToString("00");
+        }
+        else
+        {
+            return null;
+        }
+    }
 }
